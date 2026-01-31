@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador 3D Online</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        /* ESTILOS: Para que el visor ocupe toda la pantalla */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f0f0; /* Color de fondo gris claro */
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        #error-msg {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="error-msg">
+        <h3>¡Bienvenido al Visualizador 3D!</h3>
+        <p>Para ver un objeto, añade <code>?model=nombre_archivo.glb</code> al final de la URL.</p>
+    </div>
+
+    <model-viewer 
+        id="visor"
+        src="" 
+        alt="Modelo 3D" 
+        auto-rotate 
+        camera-controls 
+        shadow-intensity="1"
+        ar >
+    </model-viewer>
+
+    <script>
+        // LÓGICA JAVASCRIPT
+        // 1. Obtener los parámetros de la URL
+        const params = new URLSearchParams(window.location.search);
+        
+        // 2. Buscar el parámetro 'model'
+        const modelName = params.get('model');
+        const visor = document.getElementById('visor');
+        const errorMsg = document.getElementById('error-msg');
+
+        if (modelName) {
+            // Si hay un modelo en la URL, lo cargamos
+            visor.src = modelName;
+            // Opcional: Ajustar iluminación o fondo si quisieras
+        } else {
+            // Si no hay modelo, ocultamos el visor y mostramos instrucciones
+            visor.style.display = 'none';
+            errorMsg.style.display = 'block';
+        }
+
+        // Manejo básico de errores de carga
+        visor.addEventListener('error', (event) => {
+            console.error("Error al cargar el modelo:", event);
+            alert("No se pudo cargar el archivo: " + modelName + ". Verifica que el nombre sea correcto y esté subido.");
+        });
+    </script>
+
+</body>
+</html>
